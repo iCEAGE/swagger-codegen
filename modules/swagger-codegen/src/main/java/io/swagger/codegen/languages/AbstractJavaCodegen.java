@@ -351,7 +351,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
         name = sanitizeName(name); // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
 
         if ("class".equals(name.toLowerCase())) {
-            return "PropertyClass";
+            return "propertyClass";
         }
 
         if("_".equals(name)) {
@@ -377,6 +377,11 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
 
     @Override
     public String toParamName(String name) {
+        // to avoid conflicts with 'callback' parameter for async call
+        if ("callback".equals(name)) {
+            return "paramCallback";
+        }
+
         // should be the same as variable name
         return toVarName(name);
     }
@@ -602,7 +607,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
         if(codegenModel.description != null) {
             codegenModel.imports.add("ApiModel");
         }
-        if (allDefinitions != null && codegenModel != null && codegenModel.parentSchema != null && codegenModel.hasEnums) {
+        if (allDefinitions != null && codegenModel.parentSchema != null && codegenModel.hasEnums) {
             final Model parentModel = allDefinitions.get(codegenModel.parentSchema);
             final CodegenModel parentCodegenModel = super.fromModel(codegenModel.parent, parentModel);
             codegenModel = AbstractJavaCodegen.reconcileInlineEnums(codegenModel, parentCodegenModel);
@@ -643,7 +648,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
 
     @Override
     public Map<String, Object> postProcessModels(Map<String, Object> objs) {
-        // recursivly add import for mapping one type to multipe imports
+        // recursively add import for mapping one type to multiple imports
         List<Map<String, String>> recursiveImports = (List<Map<String, String>>) objs.get("imports");
         if (recursiveImports == null)
             return objs;
