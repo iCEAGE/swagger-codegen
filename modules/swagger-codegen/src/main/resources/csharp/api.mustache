@@ -126,16 +126,6 @@ namespace {{packageName}}.{{apiPackage}}
         }
 
         /// <summary>
-        /// Sets the base path of the API client.
-        /// </summary>
-        /// <value>The base path</value>
-        [Obsolete("SetBasePath is deprecated, please do 'Configuration.ApiClient = new ApiClient(\"http://new-path\")' instead.")]
-        public void SetBasePath(String basePath)
-        {
-            // do nothing
-        }
-
-        /// <summary>
         /// Gets or sets the configuration object
         /// </summary>
         /// <value>An instance of the Configuration</value>
@@ -155,28 +145,6 @@ namespace {{packageName}}.{{apiPackage}}
                 return _exceptionFactory;
             }
             set { _exceptionFactory = value; }
-        }
-
-        /// <summary>
-        /// Gets the default header.
-        /// </summary>
-        /// <returns>Dictionary of HTTP header</returns>
-        [Obsolete("DefaultHeader is deprecated, please use Configuration.DefaultHeader instead.")]
-        public Dictionary<String, String> DefaultHeader()
-        {
-            return this.Configuration.DefaultHeader;
-        }
-
-        /// <summary>
-        /// Add default header.
-        /// </summary>
-        /// <param name="key">Header field name.</param>
-        /// <param name="value">Header field value.</param>
-        /// <returns></returns>
-        [Obsolete("AddDefaultHeader is deprecated, please use Configuration.AddDefaultHeader instead.")]
-        public void AddDefaultHeader(string key, string value)
-        {
-            this.Configuration.AddDefaultHeader(key, value);
         }
 
         {{#operation}}
@@ -210,9 +178,9 @@ namespace {{packageName}}.{{apiPackage}}
 
             var localVarPath = "{{path}}";
             var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new Dictionary<String, String>();
+            var localVarQueryParams = new List<Tuple<String, String>>();
             var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
+            var localVarFormParams = new List<Tuple<String, String>>();
             var localVarFileParams = new Dictionary<String, FileParameter>();
             Object localVarPostBody = null;
 
@@ -241,13 +209,27 @@ namespace {{packageName}}.{{apiPackage}}
             if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // path parameter
             {{/pathParams}}
             {{#queryParams}}
-            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // query parameter
+            {{#collectionFormat}}
+            if ({{paramName}} != null)
+                foreach (var val in {{paramName}})
+                    localVarQueryParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString(val))); // query parameter
+            {{/collectionFormat}}
+            {{^collectionFormat}}
+            if ({{paramName}} != null) localVarQueryParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}}))); // query parameter
+            {{/collectionFormat}}
             {{/queryParams}}
             {{#headerParams}}
             if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // header parameter
             {{/headerParams}}
             {{#formParams}}
-            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
+            {{#collectionFormat}}
+            if ({{paramName}} != null)
+                foreach (var val in {{paramName}})
+                    localVarFormParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString(val))); // form parameter
+            {{/collectionFormat}}
+            {{^collectionFormat}}
+            if ({{paramName}} != null) localVarFormParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}}))); // form parameter
+            {{/collectionFormat}}
             {{/formParams}}
             {{#bodyParam}}
             if ({{paramName}} != null && {{paramName}}.GetType() != typeof(byte[]))
@@ -344,9 +326,9 @@ namespace {{packageName}}.{{apiPackage}}
 
             var localVarPath = "{{path}}";
             var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new Dictionary<String, String>();
+            var localVarQueryParams = new List<Tuple<String, String>>();
             var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
+            var localVarFormParams = new List<Tuple<String, String>>();
             var localVarFileParams = new Dictionary<String, FileParameter>();
             Object localVarPostBody = null;
 
@@ -375,13 +357,27 @@ namespace {{packageName}}.{{apiPackage}}
             if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // path parameter
             {{/pathParams}}
             {{#queryParams}}
-            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // query parameter
+            {{#collectionFormat}}
+            if ({{paramName}} != null)
+                foreach (var val in {{paramName}})
+                    localVarQueryParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString(val))); // query parameter
+            {{/collectionFormat}}
+            {{^collectionFormat}}
+            if ({{paramName}} != null) localVarQueryParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}}))); // query parameter
+            {{/collectionFormat}}
             {{/queryParams}}
             {{#headerParams}}
             if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // header parameter
             {{/headerParams}}
             {{#formParams}}
-            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
+            {{#collectionFormat}}
+            if ({{paramName}} != null)
+                foreach (var val in {{paramName}})
+                    localVarFormParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString(val))); // form parameter
+            {{/collectionFormat}}
+            {{^collectionFormat}}
+            if ({{paramName}} != null) localVarFormParams.Add(new Tuple<String, String>("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}}))); // form parameter
+            {{/collectionFormat}}
             {{/formParams}}
             {{#bodyParam}}
             if ({{paramName}} != null && {{paramName}}.GetType() != typeof(byte[]))
