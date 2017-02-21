@@ -22,24 +22,19 @@ Method | HTTP request | Description
 ```javascript
 var {{{moduleName}}} = require('{{{projectName}}}');
 {{#hasAuthMethods}}
-var defaultClient = {{{moduleName}}}.ApiClient.default;
-{{#authMethods}}{{#isBasic}}
-// Configure HTTP basic authorization: {{{name}}}
-var {{{name}}} = defaultClient.authentications['{{{name}}}'];
-{{{name}}}.username = 'YOUR USERNAME';
-{{{name}}}.password = 'YOUR PASSWORD';{{/isBasic}}{{#isApiKey}}
-// Configure API key authorization: {{{name}}}
-var {{{name}}} = defaultClient.authentications['{{{name}}}'];
-{{{name}}}.apiKey = 'YOUR API KEY';
-// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-//{{{name}}}.apiKeyPrefix = 'Token';{{/isApiKey}}{{#isOAuth}}
-// Configure OAuth2 access token for authorization: {{{name}}}
-var {{{name}}} = defaultClient.authentications['{{{name}}}'];
-{{{name}}}.accessToken = 'YOUR ACCESS TOKEN';{{/isOAuth}}
-{{/authMethods}}
+
+var apiInstance = new {{{moduleName}}}.DefaultApi();
+
+// Configure API key authorization: app_id
+var app_id = apiInstance.apiClient.authentications['app_id'];
+app_id.apiKey = "YOUR_APP_ID";
+
+// Configure API key authorization: app_key
+var app_key = apiInstance.apiClient.authentications['app_key'];
+app_key.apiKey = "YOUR_APP_KEY";
 {{/hasAuthMethods}}
 
-var apiInstance = new {{{moduleName}}}.{{{classname}}}();{{#hasParams}}
+{{#hasParams}}
 {{#vendorExtensions.x-codegen-hasRequiredParams}}{{#allParams}}{{#required}}
 var {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
 {{/required}}{{/allParams}}{{/vendorExtensions.x-codegen-hasRequiredParams}}{{#hasOptionalParams}}
