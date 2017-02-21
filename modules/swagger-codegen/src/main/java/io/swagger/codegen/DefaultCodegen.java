@@ -3294,6 +3294,9 @@ public class DefaultCodegen {
         // input name and age => input_name_and_age
         name = name.replaceAll(" ", "_");
 
+        // input !name => not_name
+        name = name.replaceAll("\\A!", "not_");
+
         // remove everything else other than word, number and _
         // $php_variable => php_variable
         if (allowUnicodeIdentifiers) { //could be converted to a single line with ?: operator
