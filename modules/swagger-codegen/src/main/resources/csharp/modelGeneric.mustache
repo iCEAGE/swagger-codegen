@@ -2,7 +2,10 @@
     /// {{#description}}{{.}}{{/description}}{{^description}}{{classname}}{{/description}}
     /// </summary>
     [DataContract]
-    public partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} IEquatable<{{classname}}>, IValidatableObject
+    {{#generatePropertyChanged}}
+    [ImplementPropertyChanged]
+    {{/generatePropertyChanged}}
+    {{>visibility}} partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} IEquatable<{{classname}}>, IValidatableObject
     {
         {{#vars}}
         {{#isEnum}}
@@ -170,6 +173,21 @@ this.{{name}} = {{name}};
             }
         }
 
+{{#generatePropertyChanged}}
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            // NOTE: property changed is handled via "code weaving" using Fody.
+            // Properties with setters are modified at compile time to notify of changes.
+            var propertyChanged = PropertyChanged;
+            if (propertyChanged != null)
+            {
+                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+{{/generatePropertyChanged}}
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         { {{#vars}}{{#hasValidation}}{{#maxLength}}
             // {{{name}}} ({{{datatype}}}) maxLength

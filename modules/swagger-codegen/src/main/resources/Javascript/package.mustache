@@ -2,7 +2,15 @@
   "name": "{{{projectName}}}",
   "version": "{{{projectVersion}}}",
   "description": "{{{projectDescription}}}",
-  "license": "Unlicense",
+  "license": "{{{projectLicenseName}}}",
+  "author": "AYLIEN Inc.",
+  "contributors": [
+    {
+      "name": "Hamed Ramezanian Nik",
+      "email": "hamed.r.nik@gmail.com"
+    }
+  ],
+  "keywords": [ "aylien", "news api", "news", "aylien news api"],
   "main": "{{sourceFolder}}{{#invokerPackage}}/{{invokerPackage}}{{/invokerPackage}}/index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --recursive"
@@ -10,6 +18,14 @@
   "dependencies": {
     "superagent": "1.7.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AYLIEN/aylien_newsapi_nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AYLIEN/aylien_newsapi_nodejs/issues"
+  },
+  "homepage": "https://newsapi.aylien.com/",
   "devDependencies": {
     "mocha": "~2.3.4",
     "sinon": "1.17.3",
