@@ -169,7 +169,7 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
         modelPackage = swaggerFolder + File.separatorChar + "models";
         apiPackage = swaggerFolder + File.separatorChar + "apis";
 
-        supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+        supportingFiles.add(new SupportingFile("README.mustache", "", "README.rst"));
 
         supportingFiles.add(new SupportingFile("setup.mustache", "", "setup.py"));
         supportingFiles.add(new SupportingFile("tox.mustache", "", "tox.ini"));
@@ -186,9 +186,7 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
         if(Boolean.FALSE.equals(excludeTests)) {
             supportingFiles.add(new SupportingFile("__init__test.mustache", testFolder, "__init__.py"));
         }
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
         supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
-        supportingFiles.add(new SupportingFile("travis.mustache", "", ".travis.yml"));
     }
 
     private static String dropDots(String str) {
