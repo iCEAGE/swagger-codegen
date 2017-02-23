@@ -19,41 +19,40 @@ Method | HTTP request | Description
 
 ### Example 
 ```python
-from __future__ import print_statement
-import time
 import {{{packageName}}}
 from {{{packageName}}}.rest import ApiException
 from pprint import pprint
-{{#hasAuthMethods}}{{#authMethods}}{{#isBasic}}
-# Configure HTTP basic authorization: {{{name}}}
-{{{packageName}}}.configuration.username = 'YOUR_USERNAME'
-{{{packageName}}}.configuration.password = 'YOUR_PASSWORD'{{/isBasic}}{{#isApiKey}}
-# Configure API key authorization: {{{name}}}
-{{{packageName}}}.configuration.api_key['{{{keyParamName}}}'] = 'YOUR_API_KEY'
-# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-# {{{packageName}}}.configuration.api_key_prefix['{{{keyParamName}}}'] = 'Bearer'{{/isApiKey}}{{#isOAuth}}
-# Configure OAuth2 access token for authorization: {{{name}}}
-{{{packageName}}}.configuration.access_token = 'YOUR_ACCESS_TOKEN'{{/isOAuth}}{{/authMethods}}
+
+{{#hasAuthMethods}}
+# Configure API key authorization: app_id
+aylien_news_api.configuration.api_key['X-AYLIEN-NewsAPI-Application-ID'] = 'YOUR_APP_ID'
+# Configure API key authorization: app_key
+aylien_news_api.configuration.api_key['X-AYLIEN-NewsAPI-Application-Key'] = 'YOUR_APP_KEY'
 {{/hasAuthMethods}}
 
 # create an instance of the API class
-api_instance = {{{packageName}}}.{{{classname}}}()
-{{#allParams}}{{paramName}} = {{{example}}} # {{{dataType}}} | {{{description}}}{{^required}} (optional){{/required}}{{#defaultValue}} (default to {{{.}}}){{/defaultValue}}
-{{/allParams}}
+api_instance = {{{packageName}}}.{{{classname}}}(){{#hasParams}}
+{{#allParams}}{{#required}}
+{{{paramName}}} = {{{example}}}{{/required}}{{/allParams}}
+
+{{#hasOptionalParams}}
+opts = { {{#allParams}}{{^required}}
+    '{{{paramName}}}': {{{example}}}{{#hasMore}},{{/hasMore}}{{/required}}{{/allParams}}
+}{{/hasOptionalParams}}{{/hasParams}}
 
 try: 
 {{#summary}}    # {{{.}}}
-{{/summary}}    {{#returnType}}api_response = {{/returnType}}api_instance.{{{operationId}}}({{#allParams}}{{#required}}{{paramName}}{{/required}}{{^required}}{{paramName}}={{paramName}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{#returnType}}
+{{/summary}}    {{#returnType}}api_response = {{/returnType}}api_instance.{{{operationId}}}{{#hasParams}}({{#allParams}}{{#required}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/required}}{{/allParams}}{{#hasOptionalParams}}**opts{{/hasOptionalParams}}){{/hasParams}}{{#returnType}}
     pprint(api_response){{/returnType}}
 except ApiException as e:
-    print("Exception when calling {{classname}}->{{operationId}}: %s\n" % e)
+    pprint("Exception when calling {{classname}}->{{operationId}}: %s\n" % e)
 ```
 
 ### Parameters
 {{^allParams}}This endpoint does not need any parameter.{{/allParams}}{{#allParams}}{{#-last}}
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------{{/-last}}{{/allParams}}
-{{#allParams}} **{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}[**{{dataType}}**]({{baseType}}.md){{/isPrimitiveType}}{{/isFile}}| {{description}} | {{^required}}[optional] {{/required}}{{#defaultValue}}[default to {{defaultValue}}]{{/defaultValue}}
+{{#allParams}} **{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{/isFile}}| {{description}} | {{^required}}[optional] {{/required}}{{#defaultValue}}[default to {{defaultValue}}]{{/defaultValue}}{{#allowableValues}} [enum: {{#values}}{{{.}}}{{^-last}}, {{/-last}}{{/values}}]{{/allowableValues}}
 {{/allParams}}
 
 ### Return type
@@ -62,14 +61,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-{{^authMethods}}No authorization required{{/authMethods}}{{#authMethods}}[{{{name}}}](../README.md#{{{name}}}){{^-last}}, {{/-last}}{{/authMethods}}
+{{^authMethods}}No authorization required{{/authMethods}}{{#authMethods}}[{{{name}}}](../README.rst#{{{name}}}){{^-last}}, {{/-last}}{{/authMethods}}
 
 ### HTTP request headers
 
  - **Content-Type**: {{#consumes}}{{{mediaType}}}{{#hasMore}}, {{/hasMore}}{{/consumes}}{{^consumes}}Not defined{{/consumes}}
  - **Accept**: {{#produces}}{{{mediaType}}}{{#hasMore}}, {{/hasMore}}{{/produces}}{{^produces}}Not defined{{/produces}}
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.rst#documentation-for-api-endpoints) [[Back to Model list]](../README.rst#documentation-for-models) [[Back to README]](../README.rst)
 
 {{/operation}}
 {{/operations}}
