@@ -1,21 +1,24 @@
 {
-    "name": "{{#composerVendorName}}{{.}}{{/composerVendorName}}{{^composerVendorName}}{{gitUserId}}{{/composerVendorName}}/{{#composerProjectName}}{{.}}{{/composerProjectName}}{{^composerProjectName}}{{gitRepoId}}{{/composerProjectName}}",
+    "name": "aylien/newsapi",
     {{#artifactVersion}}
     "version": "{{artifactVersion}}",
     {{/artifactVersion}}
-    "description": "{{description}}",
+    "description": "AYLIEN News API is the most powerful way of sourcing, searching and syndicating analyzed and enriched news content.",
     "keywords": [
-        "swagger",
+        "aylien",
+        "news api",
+        "news",
         "php",
         "sdk",
         "api"
     ],
-    "homepage": "http://swagger.io",
-    "license": "proprietary",
+    "homepage": "https://newsapi.aylien.com/",
+    "license": "Apache-2.0",
     "authors": [
         {
-            "name": "Swagger and contributors",
-            "homepage": "https://github.com/swagger-api/swagger-codegen"
+            "name": "Hamed Ramezanian Nik",
+            "homepage": "http://hamedrnik.com/",
+            "email": "hamed.r.nik@gmail.com"
         }
     ],
     "require": {
