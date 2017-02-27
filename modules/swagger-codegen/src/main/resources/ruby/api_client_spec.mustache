@@ -47,12 +47,12 @@ describe {{moduleName}}::ApiClient do
     let(:config) { {{moduleName}}::Configuration.new }
     let(:api_client) { {{moduleName}}::ApiClient.new(config) }
 
-    it "defaults to nil" do
-      expect({{moduleName}}::Configuration.default.params_encoding).to eq(nil)
-      expect(config.params_encoding).to eq(nil)
+    it "defaults to multi" do
+      expect({{moduleName}}::Configuration.default.params_encoding).to eq(:multi)
+      expect(config.params_encoding).to eq(:multi)
 
       request = api_client.build_request(:get, '/test')
-      expect(request.options[:params_encoding]).to eq(nil)
+      expect(request.options[:params_encoding]).to eq(:multi)
     end
 
     it "can be customized" do
