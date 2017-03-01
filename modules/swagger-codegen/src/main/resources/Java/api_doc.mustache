@@ -12,7 +12,7 @@ Method | HTTP request | Description
 {{#operation}}
 <a name="{{operationId}}"></a>
 # **{{operationId}}**
-> {{#returnType}}{{returnType}} {{/returnType}}{{operationId}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+> {{#returnType}}{{returnType}} {{/returnType}}{{operationId}}({{parameterBuilderParamsLowerCase}})
 
 {{summary}}{{#notes}}
 
@@ -20,37 +20,39 @@ Method | HTTP request | Description
 
 ### Example
 ```java
-// Import classes:{{#hasAuthMethods}}
-//import {{{invokerPackage}}}.ApiClient;{{/hasAuthMethods}}
-//import {{{invokerPackage}}}.ApiException;{{#hasAuthMethods}}
-//import {{{invokerPackage}}}.Configuration;
-//import {{{invokerPackage}}}.auth.*;{{/hasAuthMethods}}
-//import {{{package}}}.{{{classname}}};
+import {{{invokerPackage}}}.*;
+import {{{invokerPackage}}}.auth.*;
+import {{{invokerPackage}}}.models.*;
+import {{{invokerPackage}}}.parameters.*;
+import {{{invokerPackage}}}.api.DefaultApi;
+
+import java.util.*;
 
 {{#hasAuthMethods}}
 ApiClient defaultClient = Configuration.getDefaultApiClient();
-{{#authMethods}}{{#isBasic}}
-// Configure HTTP basic authorization: {{{name}}}
-HttpBasicAuth {{{name}}} = (HttpBasicAuth) defaultClient.getAuthentication("{{{name}}}");
-{{{name}}}.setUsername("YOUR USERNAME");
-{{{name}}}.setPassword("YOUR PASSWORD");{{/isBasic}}{{#isApiKey}}
-// Configure API key authorization: {{{name}}}
-ApiKeyAuth {{{name}}} = (ApiKeyAuth) defaultClient.getAuthentication("{{{name}}}");
-{{{name}}}.setApiKey("YOUR API KEY");
-// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-//{{{name}}}.setApiKeyPrefix("Token");{{/isApiKey}}{{#isOAuth}}
-// Configure OAuth2 access token for authorization: {{{name}}}
-OAuth {{{name}}} = (OAuth) defaultClient.getAuthentication("{{{name}}}");
-{{{name}}}.setAccessToken("YOUR ACCESS TOKEN");{{/isOAuth}}
-{{/authMethods}}
+
+// Configure API key authorization: app_id
+ApiKeyAuth app_id = (ApiKeyAuth) defaultClient.getAuthentication("app_id");
+app_id.setApiKey("YOUR_APP_ID");
+
+// Configure API key authorization: app_key
+ApiKeyAuth app_key = (ApiKeyAuth) defaultClient.getAuthentication("app_key");
+app_key.setApiKey("YOUR_APP_KEY");
 {{/hasAuthMethods}}
 
 {{{classname}}} apiInstance = new {{{classname}}}();
+
 {{#allParams}}
-{{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
+{{{dataType}}} {{{paramName}}} = {{{example}}};
 {{/allParams}}
+
+{{parameterBuilderParams}}.Builder {{parameterBuilderNameLowerCase}} = {{parameterBuilderParams}}.newBuilder();
+
+{{#allParams}}{{parameterBuilderNameLowerCase}}.{{paramBuilderSetterName}}({{{paramName}}});
+{{/allParams}}
+
 try {
-    {{#returnType}}{{{returnType}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{#returnType}}
+    {{#returnType}}{{{returnType}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{parameterBuilderNameLowerCase}}.build());{{#returnType}}
     System.out.println(result);{{/returnType}}
 } catch (ApiException e) {
     System.err.println("Exception when calling {{{classname}}}#{{{operationId}}}");
@@ -62,7 +64,7 @@ try {
 {{^allParams}}This endpoint does not need any parameter.{{/allParams}}{{#allParams}}{{#-last}}
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------{{/-last}}{{/allParams}}
-{{#allParams}} **{{paramName}}** | {{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} |{{^required}} [optional]{{/required}}{{#defaultValue}} [default to {{defaultValue}}]{{/defaultValue}}{{#allowableValues}} [enum: {{#values}}{{{.}}}{{^-last}}, {{/-last}}{{/values}}]{{/allowableValues}}
+{{#allParams}} **{{paramName}}** | {{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}**{{dataType}}**{{/isFile}}{{/isPrimitiveType}}| {{description}} |{{^required}} [optional]{{/required}}{{#defaultValue}} [default to {{defaultValue}}]{{/defaultValue}}{{#allowableValues}} [enum: {{#values}}{{{.}}}{{^-last}}, {{/-last}}{{/values}}]{{/allowableValues}}
 {{/allParams}}
 
 ### Return type

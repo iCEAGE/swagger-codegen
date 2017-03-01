@@ -7,6 +7,7 @@ import {{invokerPackage}}.ApiException;
 import {{invokerPackage}}.ApiClient;
 import {{invokerPackage}}.Configuration;
 import {{modelPackage}}.*;
+import {{invokerPackage}}.parameters.*;
 import {{invokerPackage}}.Pair;
 
 {{#imports}}import {{import}};
@@ -55,6 +56,9 @@ public class {{classname}} {
    */
   public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException {
     Object {{localVariablePrefix}}localVarPostBody = {{#bodyParam}}{{paramName}}{{/bodyParam}}{{^bodyParam}}null{{/bodyParam}};
+
+    // setting builder variables{{#allParams}}
+    {{{dataType}}} {{paramName}} = {{{parameterBuilderParamsLowerCase}}}.{{paramBuilderGetterName}}();{{/allParams}}
     {{#allParams}}{{#required}}
     // verify the required parameter '{{paramName}}' is set
     if ({{paramName}} == null) {
@@ -68,7 +72,7 @@ public class {{classname}} {
     // query params
     {{javaUtilPrefix}}List<Pair> {{localVariablePrefix}}localVarQueryParams = new {{javaUtilPrefix}}ArrayList<Pair>();
     {{javaUtilPrefix}}Map<String, String> {{localVariablePrefix}}localVarHeaderParams = new {{javaUtilPrefix}}HashMap<String, String>();
-    {{javaUtilPrefix}}Map<String, Object> {{localVariablePrefix}}localVarFormParams = new {{javaUtilPrefix}}HashMap<String, Object>();
+    {{javaUtilPrefix}}List<Pair> {{localVariablePrefix}}localVarFormParams = new {{javaUtilPrefix}}ArrayList<Pair>();
 
     {{#queryParams}}
     {{localVariablePrefix}}localVarQueryParams.addAll({{localVariablePrefix}}apiClient.parameterToPairs("{{#collectionFormat}}{{{collectionFormat}}}{{/collectionFormat}}", "{{baseName}}", {{paramName}}));
@@ -78,8 +82,8 @@ public class {{classname}} {
       {{localVariablePrefix}}localVarHeaderParams.put("{{baseName}}", {{localVariablePrefix}}apiClient.parameterToString({{paramName}}));
     {{/headerParams}}
 
-    {{#formParams}}if ({{paramName}} != null)
-      {{localVariablePrefix}}localVarFormParams.put("{{baseName}}", {{paramName}});
+    {{#formParams}}
+      {{localVariablePrefix}}localVarFormParams.addAll({{localVariablePrefix}}apiClient.parameterToPairs("{{#collectionFormat}}{{{collectionFormat}}}{{/collectionFormat}}", "{{baseName}}", {{paramName}}));
     {{/formParams}}
 
     final String[] {{localVariablePrefix}}localVarAccepts = {

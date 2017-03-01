@@ -22,6 +22,7 @@ public class CodegenParameter {
     public CodegenProperty items;
     public Map<String, Object> vendorExtensions;
     public boolean hasValidation;
+    public String paramBuilderGetterName, paramBuilderSetterName;
 
     /**
      * Determines whether this parameter is mandatory. If the parameter is in "path",

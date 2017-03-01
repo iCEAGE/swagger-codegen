@@ -2166,6 +2166,15 @@ public class DefaultCodegen {
                 }
             }
         }
+
+        // Initialize param builder getter and setter names
+        for (CodegenParameter cp : allParams) {
+            if (cp.paramName != null && !cp.paramName.isEmpty()){
+                cp.paramBuilderGetterName = "get" + cp.paramName.substring(0, 1).toUpperCase() + cp.paramName.substring(1);
+                cp.paramBuilderSetterName = "set" + cp.paramName.substring(0, 1).toUpperCase() + cp.paramName.substring(1);
+            }
+        }
+
         for (String i : imports) {
             if (needToImport(i)) {
                 op.imports.add(i);
@@ -2819,6 +2828,15 @@ public class DefaultCodegen {
             LOGGER.warn("generated unique operationId `" + uniqueName + "`");
         }
         co.operationId = uniqueName;
+
+        if (co.returnType != null && !co.returnType.isEmpty()){
+            co.parameterBuilderParamsLowerCase = co.returnType.substring(0, 1).toLowerCase() + co.returnType.substring(1) + "Params";
+            co.parameterBuilderParams = co.returnType + "Params";
+
+            co.parameterBuilderNameLowerCase = co.returnType.substring(0, 1).toLowerCase() + co.returnType.substring(1) + "Builder";
+            co.parameterBuilderName = co.returnType + "Builder";
+        }
+
         co.operationIdLowerCase = uniqueName.toLowerCase();
         opList.add(co);
         co.baseName = tag;

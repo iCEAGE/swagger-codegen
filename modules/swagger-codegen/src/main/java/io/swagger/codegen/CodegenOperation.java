@@ -36,6 +36,8 @@ public class CodegenOperation {
     public Map<String, Object> vendorExtensions;
     public String nickname; // legacy support
     public String operationIdLowerCase; // for mardown documentation
+    public String parameterBuilderParams, parameterBuilderParamsLowerCase;
+    public String parameterBuilderName, parameterBuilderNameLowerCase;
 
     /**
      * Check if there's at least one parameter
