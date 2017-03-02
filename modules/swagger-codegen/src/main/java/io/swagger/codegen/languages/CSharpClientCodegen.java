@@ -283,18 +283,13 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
         supportingFiles.add(new SupportingFile("ExceptionFactory.mustache",
                 clientPackageDir, "ExceptionFactory.cs"));
 
-        supportingFiles.add(new SupportingFile("compile.mustache", "", "build.bat"));
         supportingFiles.add(new SupportingFile("compile-mono.sh.mustache", "", "build.sh"));
 
         // copy package.config to nuget's standard location for project-level installs
         supportingFiles.add(new SupportingFile("packages.config.mustache", packageFolder + File.separator, "packages.config"));
-        // .travis.yml for travis-ci.org CI
-        supportingFiles.add(new SupportingFile("travis.mustache", "", ".travis.yml"));
 
         // Only write out test related files if excludeTests is unset or explicitly set to false (see start of this method)
         if(Boolean.FALSE.equals(excludeTests)) {
-            // shell script to run the nunit test
-            supportingFiles.add(new SupportingFile("mono_nunit_test.mustache", "", "mono_nunit_test.sh"));
 
             modelTestTemplateFiles.put("model_test.mustache", ".cs");
             apiTestTemplateFiles.put("api_test.mustache", ".cs");
@@ -306,8 +301,8 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
             supportingFiles.add(new SupportingFile("FodyWeavers.xml", packageFolder, "FodyWeavers.xml"));
         }
 
+        supportingFiles.add(new SupportingFile("LICENSE.mustache", "", "LICENSE"));
         supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
         supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
         // apache v2 license
         // UPDATE (20160612) no longer needed as the Apache v2 LICENSE is added globally
@@ -319,7 +314,7 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
         if (optionalProjectFileFlag) {
             supportingFiles.add(new SupportingFile("Solution.mustache", "", packageName + ".sln"));
             supportingFiles.add(new SupportingFile("Project.mustache", packageFolder, packageName + ".csproj"));
-            supportingFiles.add(new SupportingFile("nuspec.mustache", packageFolder, packageName + ".nuspec"));
+            supportingFiles.add(new SupportingFile("nuspec.mustache", packageName + ".nuspec"));
 
             if(Boolean.FALSE.equals(excludeTests)) {
                 // NOTE: This exists here rather than previous excludeTests block because the test project is considered an optional project file.
