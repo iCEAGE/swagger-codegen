@@ -9,7 +9,7 @@ public class CodegenParameter {
     public boolean isFormParam, isQueryParam, isPathParam, isHeaderParam,
             isCookieParam, isBodyParam, hasMore, isContainer,
             secondaryParam, isCollectionFormatMulti, isPrimitiveType;
-    public String baseName, paramName, dataType, datatypeWithEnum, dataFormat,
+    public String baseName, paramName, paramNameUpperCase, dataType, datatypeWithEnum, dataFormat,
           collectionFormat, description, unescapedDescription, baseType, defaultValue, enumName;
     public String example; // example value (x-example)
     public String jsonSchema;
@@ -85,6 +85,7 @@ public class CodegenParameter {
         output.secondaryParam = this.secondaryParam;
         output.baseName = this.baseName;
         output.paramName = this.paramName;
+        output.paramNameUpperCase = this.paramNameUpperCase;
         output.dataType = this.dataType;
         output.datatypeWithEnum = this.datatypeWithEnum;
         output.enumName = this.enumName;
@@ -183,6 +184,8 @@ public class CodegenParameter {
         if (baseName != null ? !baseName.equals(that.baseName) : that.baseName != null)
             return false;
         if (paramName != null ? !paramName.equals(that.paramName) : that.paramName != null)
+            return false;
+        if (paramNameUpperCase != null ? !paramNameUpperCase.equals(that.paramNameUpperCase) : that.paramNameUpperCase!= null)
             return false;
         if (dataType != null ? !dataType.equals(that.dataType) : that.dataType != null)
             return false;
@@ -285,6 +288,7 @@ public class CodegenParameter {
         result = 31 * result + (isPrimitiveType ? 13:31);
         result = 31 * result + (baseName != null ? baseName.hashCode() : 0);
         result = 31 * result + (paramName != null ? paramName.hashCode() : 0);
+        result = 31 * result + (paramNameUpperCase != null ? paramNameUpperCase.hashCode() : 0);
         result = 31 * result + (dataType != null ? dataType.hashCode() : 0);
         result = 31 * result + (datatypeWithEnum != null ? datatypeWithEnum.hashCode() : 0);
         result = 31 * result + (enumName != null ? enumName.hashCode() : 0);

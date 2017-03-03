@@ -3,29 +3,28 @@ package {{packageName}}
 
 {{#operations}}
 import (
-	"net/url"
-	"strings"
-{{#imports}}	"{{import}}"
-{{/imports}}
+	"encoding/json"
+	"io/ioutil"
+	"reflect"
 )
 
-type {{classname}} struct {
-	Configuration *Configuration
+type DefaultApi struct {
+	Configuration Configuration
 }
 
-func New{{classname}}() *{{classname}} {
+func NewDefaultApi() *DefaultApi {
 	configuration := NewConfiguration()
-	return &{{classname}}{
-		Configuration: configuration,
+	return &DefaultApi{
+		Configuration: *configuration,
 	}
 }
 
-func New{{classname}}WithBasePath(basePath string) *{{classname}} {
+func NewDefaultApiWithBasePath(basePath string) *DefaultApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &{{classname}}{
-		Configuration: configuration,
+	return &DefaultApi{
+		Configuration: *configuration,
 	}
 }
 {{#operation}}
@@ -34,32 +33,30 @@ func New{{classname}}WithBasePath(basePath string) *{{classname}} {
  * {{summary}}{{#notes}}
  * {{notes}}{{/notes}}
  *
-{{#allParams}} * @param {{paramName}} {{description}}
+ * @param params This is an {{parameterBuilderParams}} struct which accepts following parameters:
+{{#allParams}} ** @param {{paramNameUpperCase}} {{description}}
 {{/allParams}} * @return {{#returnType}}{{^isListContainer}}*{{/isListContainer}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
  */
-func (a {{{classname}}}) {{{nickname}}}({{#allParams}}{{paramName}} {{{dataType}}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) ({{#returnType}}{{^isListContainer}}*{{/isListContainer}}{{{returnType}}}, {{/returnType}}*APIResponse, error) {
+func (a {{{classname}}}) {{{nickname}}}(params *{{parameterBuilderParams}}) ({{#returnType}}{{^isListContainer}}*{{/isListContainer}}{{{returnType}}}, {{/returnType}}*APIResponse, error) {
 
-	var localVarHttpMethod = strings.ToUpper("{{httpMethod}}")
+	var httpMethod = "{{httpMethod}}"
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "{{path}}"{{#pathParams}}
+	path := a.Configuration.BasePath + "{{path}}"{{#pathParams}}
 	localVarPath = strings.Replace(localVarPath, "{"+"{{baseName}}"+"}", fmt.Sprintf("%v", {{paramName}}), -1){{/pathParams}}
 
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := make(map[string]string)
-	var localVarPostBody interface{}
-	var localVarFileName string
-	var localVarFileBytes []byte
+	headerParams := make(map[string]string)
+	queryParams := []QueryParams{}
+	formParams := []FormParams{}
 {{#authMethods}}
 	// authentication '({{name}})' required
 {{#isApiKey}}
 {{#isKeyInHeader}}
 	// set key with prefix in header
-	localVarHeaderParams["{{keyParamName}}"] = a.Configuration.GetAPIKeyWithPrefix("{{keyParamName}}")
+	headerParams["{{keyParamName}}"] = a.Configuration.GetAPIKeyWithPrefix("{{keyParamName}}")
 {{/isKeyInHeader}}
 {{#isKeyInQuery}}
 	// set key with prefix in query string
-	localVarQueryParams["{{keyParamName}}"] =  a.Configuration.GetAPIKeyWithPrefix("{{keyParamName}}")
+	headerParams["{{keyParamName}}"] =  a.Configuration.GetAPIKeyWithPrefix("{{keyParamName}}")
 {{/isKeyInQuery}}
 {{/isApiKey}}
 {{#isBasic}}
@@ -77,17 +74,24 @@ func (a {{{classname}}}) {{{nickname}}}({{#allParams}}{{paramName}} {{{dataType}
 {{/authMethods}}
 	// add default headers if any
 	for key := range a.Configuration.DefaultHeader {
-		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+		headerParams[key] = a.Configuration.DefaultHeader[key]
 	}
 	{{#hasQueryParams}}
 	{{#queryParams}}
 	{{#isListContainer}}
-	var {{paramName}}CollectionFormat = "{{#collectionFormat}}{{collectionFormat}}{{/collectionFormat}}"
-	localVarQueryParams.Add("{{baseName}}", a.Configuration.APIClient.ParameterToString({{paramName}}, {{paramName}}CollectionFormat))
+	for _, f := range params.{{paramNameUpperCase}} {
+		queryParams = append(queryParams, QueryParams{
+			Item1: "{{baseName}}",
+			Item2: a.Configuration.APIClient.ParameterToString(f)})
+	}
 
 	{{/isListContainer}}
 	{{^isListContainer}}
-	localVarQueryParams.Add("{{baseName}}", a.Configuration.APIClient.ParameterToString({{paramName}}, ""))
+	if !isZero(reflect.ValueOf(params.{{paramNameUpperCase}})) {
+		queryParams = append(queryParams, QueryParams{
+			Item1: "{{baseName}}",
+			Item2: a.Configuration.APIClient.ParameterToString(params.{{paramNameUpperCase}})})
+	}
 	{{/isListContainer}}
 	{{/queryParams}}
 	{{/hasQueryParams}}
@@ -98,19 +102,19 @@ func (a {{{classname}}}) {{{nickname}}}({{#allParams}}{{paramName}} {{{dataType}
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
 	if localVarHttpContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+		headerParams["Content-Type"] = localVarHttpContentType
 	}
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		{{#produces}}
 		"{{{mediaType}}}",
 		{{/produces}}
-		}
+	}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
 	if localVarHttpHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+		headerParams["Accept"] = localVarHttpHeaderAccept
 	}
 {{#hasHeaderParams}}
 {{#headerParams}}
@@ -120,14 +124,21 @@ func (a {{{classname}}}) {{{nickname}}}({{#allParams}}{{paramName}} {{{dataType}
 {{/hasHeaderParams}}
 {{#hasFormParams}}
 {{#formParams}}
-{{#isFile}}
-	fbs, _ := ioutil.ReadAll(file)
-	localVarFileBytes = fbs
-	localVarFileName = file.Name()
-{{/isFile}}
-{{^isFile}}
-	localVarFormParams["{{paramName}}"] = a.Configuration.APIClient.ParameterToString({{paramName}}, "")
-{{/isFile}}
+{{#isListContainer}}
+	for _, f := range params.{{paramNameUpperCase}} {
+		formParams = append(formParams, FormParams{
+			Item1: "{{baseName}}",
+			Item2: a.Configuration.APIClient.ParameterToString(f)})
+	}
+
+	{{/isListContainer}}
+	{{^isListContainer}}
+	if !isZero(reflect.ValueOf(params.{{paramNameUpperCase}})) {
+		formParams = append(formParams, FormParams{
+			Item1: "{{baseName}}",
+			Item2: a.Configuration.APIClient.ParameterToString(params.{{paramNameUpperCase}})})
+	}
+	{{/isListContainer}}
 {{/formParams}}
 {{/hasFormParams}}
 {{#hasBodyParam}}
@@ -138,22 +149,15 @@ func (a {{{classname}}}) {{{nickname}}}({{#allParams}}{{paramName}} {{{dataType}
 {{#returnType}}
 	var successPayload = new({{returnType}})
 {{/returnType}}
-	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
-
-	var localVarURL, _ = url.Parse(localVarPath)
-	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "{{operationId}}", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
-	if localVarHttpResponse != nil {
-		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
-		localVarAPIResponse.Payload = localVarHttpResponse.Body()
-	}
-
+	httpResponse, err := a.Configuration.APIClient.CallAPI(path, httpMethod, headerParams, queryParams, formParams)
 	if err != nil {
-		return {{#returnType}}{{#isListContainer}}*{{/isListContainer}}successPayload, {{/returnType}}localVarAPIResponse, err
+		return successPayload, NewAPIResponse(httpResponse), err
 	}
-{{#returnType}}
-	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
-{{/returnType}}
-	return {{#returnType}}{{#isListContainer}}*{{/isListContainer}}successPayload, {{/returnType}}localVarAPIResponse, err
+
+	defer httpResponse.Body.Close()
+	resBody, err := ioutil.ReadAll(httpResponse.Body)
+
+	err = json.Unmarshal(resBody, &successPayload)
+	return successPayload, NewAPIResponse(httpResponse), err
 }
 {{/operation}}{{/operations}}

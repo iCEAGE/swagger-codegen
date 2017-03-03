@@ -2427,6 +2427,10 @@ public class DefaultCodegen {
                 p.isCollectionFormatMulti = true;
             }
             p.paramName = toParamName(qp.getName());
+            String localParamname = camelize(removeNonNameElementToCamelCase(qp.getName()));
+            p.paramNameUpperCase = p.paramName.substring(0, 1).toUpperCase() + p.paramName.substring((1));
+            if (p.paramNameUpperCase.charAt(p.paramNameUpperCase.length() - 1) == '_')
+                p.paramNameUpperCase = p.paramNameUpperCase.substring(0, p.paramNameUpperCase.length() - 1);
 
             // import
             if (cp.complexType != null) {
